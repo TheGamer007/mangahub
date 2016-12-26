@@ -1,0 +1,89 @@
+#:kivy 1.9.1
+
+#<BookCover>:
+#	size_hint_x: None
+#	width: 0.75 * self.height
+#	canvas.before:
+#		Color:
+#			rgba: 0,1,0,1
+#		Rectangle:
+#			pos: self.pos
+#			size: self.size
+#		Color:
+#			rgba: 1,1,1,1
+#		Line:
+#			width: 1.2
+#			rectangle: self.x,self.y,self.width,self.height
+#
+#<HomeScreen>:
+#	canvas.before:
+#		Color:
+#			rgba: 1,0,0,1
+#		Rectangle:
+#			pos: self.pos
+#			size: self.size
+#			
+#	padding: 10
+#	spacing: 10
+#	cols: 3
+#	size_hint_x: None
+#	width: self.minimum_width
+#	size: root.size
+#    BookCover:
+#    	text: '1'
+#    BookCover:
+#    BookCover:
+#    BookCover:
+
+<TextItem>:
+	canvas.before:
+		Color:
+			rgba: 1,1,1,1
+		Rectangle:
+			pos: self.pos
+			size: self.size
+		Color:
+			rgba: 0,0,0,0.1
+		Line:
+			width: 1.1
+			points: self.x,self.y,self.x+self.width,self.y
+	orientation: 'horizontal'
+	size_hint_y: None
+	height: label_manga_title.height
+	spacing: 16
+	Label:
+		color: 0,0,0,1
+		markup: True
+		text: '[b]>>>[/b]'
+		padding: 0,8
+		font_size: 24
+		size_hint: None,None
+		size: self.texture_size
+	Label:
+		id: label_manga_title
+		padding: 8,8
+		color: 0,0,0,1
+		text: root.text
+		font_size: 24
+		text_size: self.size
+		size_hint_y: None
+		height: self.texture_size[1]
+<TextHomeScreen>:
+	orientation: 'vertical'
+	canvas.before:
+		Color:
+			rgba: 1,1,1,1
+		Rectangle:
+			pos: self.pos
+			size: self.size
+	padding: 8,0,8,8
+	BoxLayout:
+		id: layout_catalog
+		orientation: 'vertical'
+		spacing: 1
+		padding: 8,4,24,0
+	Button:
+		id: btn_add
+		text: "Add New Series"
+		size_hint_y: None
+		height: 50
