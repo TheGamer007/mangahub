@@ -4,6 +4,7 @@ from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty,ListProperty
+from library import getSeries
 
 class BookCover(Label):
     '''
@@ -23,7 +24,7 @@ class TextHomeScreen(BoxLayout):
     '''
     A HomeScreen with minimal text-based design for testing purposes
     '''
-    titles = ListProperty(['Detective Conan','Boku No Hero Academia','Shokugeki No Souma','Fairy Tail'])
+    titles = ListProperty(getSeries("F:\Manga")) #Hardcode Warning
     def __init__(self,**kwargs):
         super(TextHomeScreen,self).__init__(**kwargs)
         catalog = self.ids.layout_catalog
