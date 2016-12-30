@@ -6,6 +6,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty,ListProperty
 from library import getSeries
+from time import sleep
 
 class BookCover(Label):
     '''
@@ -35,11 +36,7 @@ class TextHomeScreen(BoxLayout):
         for title in self.titles:
             item = TextItem()
             item.text = title
-            catalog.add_widget(item)
-        # Add a widget to take up the remaining space invisibly
-        # This pushes the actual items up
-        #catalog.add_widget(Widget())
-        
+            catalog.add_widget(item)        
 
 class TextItem(BoxLayout):
     '''
@@ -47,4 +44,3 @@ class TextItem(BoxLayout):
     of the title
     '''
     text = StringProperty()
-    pass

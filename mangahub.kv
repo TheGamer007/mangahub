@@ -59,8 +59,10 @@
 		font_size: 24
 		size_hint: None,None
 		size: self.texture_size
-	Label:
+	Button:
 		id: label_manga_title
+		background_normal: ''
+		background_color: 1,1,1,1
 		padding: 8,8
 		color: 0,0,0,1
 		text: root.text
@@ -86,7 +88,6 @@
 			id: layout_catalog
 			size_hint_y: None
 			height: self.minimum_height
-			orientation: 'tb-lr'
 			spacing: 1
 			padding: 16,8	,24,8
 	Button:
