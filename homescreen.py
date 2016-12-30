@@ -1,6 +1,7 @@
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty,ListProperty
@@ -24,7 +25,10 @@ class TextHomeScreen(BoxLayout):
     '''
     A HomeScreen with minimal text-based design for testing purposes
     '''
-    titles = ListProperty(getSeries("F:\Manga")) #Hardcode Warning
+    titles = ListProperty()
+
+    def getSeries(self,sourcepath):
+        return getSeries(sourcepath)
     def __init__(self,**kwargs):
         super(TextHomeScreen,self).__init__(**kwargs)
         catalog = self.ids.layout_catalog
@@ -34,7 +38,7 @@ class TextHomeScreen(BoxLayout):
             catalog.add_widget(item)
         # Add a widget to take up the remaining space invisibly
         # This pushes the actual items up
-        catalog.add_widget(Widget())
+        #catalog.add_widget(Widget())
         
 
 class TextItem(BoxLayout):

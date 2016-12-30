@@ -1,19 +1,45 @@
 from os import listdir
+import pickle
+
+FILENAME_PKL = "mangahub.pkl"
 
 def addSource(sourcepath):
     '''
     Adds this directory as one of the sources for the library
     '''
-    #Store in pkl as an element of a list of paths, which is dict value
+    current_dict={'sources':[]}
+    try:
+        pkl_read = open(FILENAME_PKL,'rb')
+        current_dict = pickle.load(pkl_read)
+        pkl_read.close()
+    except:
+        #pkl doesn't exist
+        pass
+    current_dict['sources'].append(sourcepath)
+    pkl_write = open(FILENAME_PKL,'wb')
+    pickle.dump(current_dict,pkl_write)
+    pkl_write.close()
 
 def getSources():
     '''
-    Lists all the directories which are sources for the library
+    Returns all sources as a list
     '''
-    #Read the pkl dict and display all elems of list
+    try:
+        pkl_read = open(FILENAME_PKL,'rb')
+        return pickle.load(pkl_read)['sources']
+    except:
+        return []
     
 def getSeries(sourcepath):
     '''
-    Returns all series in the source directory passed as a list of strings
+    Returns a list of string Series titles found in the source directory passed
     '''
     return listdir(sourcepath)
+def getAllSeries():
+    '''
+    Returns a list containing series from all sources
+    '''
+    allseries=[]
+    for source in getSources():
+        allseries = allseries + getSeries(source)
+    return allseries
