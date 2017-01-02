@@ -4,8 +4,9 @@ from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.modalview import ModalView
 from kivy.properties import StringProperty,ListProperty
-from library import getSeries
+from library import getAllSeries,SourcesDialogContent
 from time import sleep
 
 class BookCover(Label):
@@ -28,15 +29,27 @@ class TextHomeScreen(BoxLayout):
     '''
     titles = ListProperty()
 
-    def getSeries(self,sourcepath):
-        return getSeries(sourcepath)
-    def __init__(self,**kwargs):
-        super(TextHomeScreen,self).__init__(**kwargs)
+    def getAllSeries(self):
+        return getAllSeries()
+    def openSourcesDialog(self,button):
+        modal = ModalView(size_hint=(0.7,0.7))
+        s = SourcesDialogContent()
+        s.ids['btn_cls'].bind(on_release=modal.dismiss)
+        modal.add_widget(s)
+        modal.bind(on_dismiss=self.onPopupClosed)
+        modal.open()
+    def onPopupClosed(self,instance):
+        #refresh the series listing
+        self.titles = getAllSeries()
+    def on_titles(self,instance,value):
         catalog = self.ids.layout_catalog
-        for title in self.titles:
+        #remove old labels
+        catalog.clear_widgets()
+        #add new labels
+        for title in value:
             item = TextItem()
             item.text = title
-            catalog.add_widget(item)        
+            catalog.add_widget(item)
 
 class TextItem(BoxLayout):
     '''
