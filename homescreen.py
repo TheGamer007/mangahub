@@ -6,8 +6,10 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.modalview import ModalView
 from kivy.properties import StringProperty,ListProperty
-from library import getAllSeries,SourcesDialogContent
-from time import sleep
+from library import getAllSeries,SourcesDialogContent,getChapters
+from seriesscreen import SeriesScreen
+from os.path import join
+from kivy.uix.screenmanager import Screen
 
 class BookCover(Label):
     '''
@@ -23,11 +25,11 @@ class HomeScreen(GridLayout):
     '''
     pass
 
-class TextHomeScreen(BoxLayout):
+class TextHomeScreen(Screen):
     '''
     A HomeScreen with minimal text-based design for testing purposes
     '''
-    titles = ListProperty()
+    titles = ListProperty() # list of (source_path,series_name) tuples
 
     def getAllSeries(self):
         return getAllSeries()
@@ -46,9 +48,13 @@ class TextHomeScreen(BoxLayout):
         #remove old labels
         catalog.clear_widgets()
         #add new labels
-        for title in value:
+        for series_tuple in value:
             item = TextItem()
-            item.text = title
+            # os.path.join takes care of trailing slashes and uses proper
+            # seperators. Both the passed arguments should also be valid
+            # since they were obtained through filechooser and os.listdir
+            item.path = join(series_tuple[0],series_tuple[1])
+            item.text = series_tuple[1]
             catalog.add_widget(item)
 
 class TextItem(BoxLayout):
@@ -57,3 +63,17 @@ class TextItem(BoxLayout):
     of the title
     '''
     text = StringProperty()
+    path = StringProperty() #This is path to the series, not a chapter
+    def buttonClicked(self,button):
+        #get the RootScreenManager object in order to shift to new screen
+        myRootScreenManager = self.parent.parent.parent.parent.parent
+        mySeriesScreen = SeriesScreen()
+        # Passing chapters while initiating: SeriesScreen(chapters=[blah,blah])
+        # gives Attribute Error due to self.ids.chapter_list not being found
+        # Likey cause is __init__ not being called before on_chapters. Hence, assign chapters seperately as below.
+        # For the same reason, it is very important that the path StringProperty be assigned
+        # before chapters ListProperty. Otherwise, basepath will be taken as default '' when on_chapters is run
+        mySeriesScreen.basepath = self.path
+        mySeriesScreen.chapters = getChapters(self.path)
+        mySeriesScreen.ids.chapter_name.text = self.text
+        myRootScreenManager.switch_to(mySeriesScreen)

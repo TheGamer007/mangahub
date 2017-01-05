@@ -71,32 +71,35 @@
 		text_size: self.size
 		size_hint_y: None
 		height: self.texture_size[1]
+		on_release: root.buttonClicked(self)
 <TextHomeScreen>:
-	orientation: 'vertical'
+	name: 'texthomescreen'
 	titles: root.getAllSeries()
-	canvas.before:
-		Color:
-			rgba: 1,1,1,1
-		Rectangle:
-			pos: self.pos
-			size: self.size
-	padding: 8,0,8,8
-	ScrollView:
-		do_scroll_x: False
-		do_scroll_y: True
-		GridLayout:
-			cols: 1
-			id: layout_catalog
+	BoxLayout:
+		orientation: 'vertical'
+		canvas.before:
+			Color:
+				rgba: 1,1,1,1
+			Rectangle:
+				pos: self.pos
+				size: self.size
+		padding: 8,0,8,8
+		ScrollView:
+			do_scroll_x: False
+			do_scroll_y: True
+			GridLayout:
+				cols: 1
+				id: layout_catalog
+				size_hint_y: None
+				height: self.minimum_height
+				spacing: 1
+				padding: 16,8	,24,8
+		Button:
+			id: btn_add
+			on_release: root.openSourcesDialog(self)
+			text: "Manage Sources"
 			size_hint_y: None
-			height: self.minimum_height
-			spacing: 1
-			padding: 16,8	,24,8
-	Button:
-		id: btn_add
-		on_release: root.openSourcesDialog(self)
-		text: "Manage Sources"
-		size_hint_y: None
-		height: 50
+			height: 50
 
 ## library.py
 <SourcesDialogLabel>:
@@ -160,4 +163,51 @@
 			padding: 16,8
 			size_hint: None, None
 			size: self.texture_size
-## imageviewer.py
+## imageviewscreen.py
+<ImageScreen>:
+	Image:
+		source: root.src
+<ImageViewScreen>:
+	name: 'imageviewscreen'
+	BoxLayout:
+		orientation: 'horizontal'
+		Button:
+			id: chapter_prev
+			text: '<<<'
+			size_hint_x: None
+			size_hint_y: 0.4
+			pos_hint: {'center_y':0.5}
+		ScreenManager:
+			id: images_manager
+		Button:
+			id: chapter_next
+			text: '>>>'
+			size_hint_x: None
+			size_hint_y: 0.4
+			pos_hint: {'center_y':0.5}
+## seriesscreen.py
+<ChapterLabel>:
+	text_size: self.size
+	size_hint_y: None
+	height: self.texture_size[1]
+	padding: 8,4
+	halign: 'center'
+<SeriesScreen>:
+	name: 'seriesscreen' #try making of form series_seriesname
+	BoxLayout:
+		orientation: 'vertical'
+		Label:
+			id: chapter_name
+			text: '[b]Series Name Here[/b]'
+			markup: True
+			size_hint_y: None
+		ScrollView:
+			do_scroll_x: False
+			do_scroll_y: True
+			GridLayout:
+				cols: 1
+				id: chapters_list
+				size_hint_y: None
+				height: self.minimum_height
+				spacing: 1
+				padding: 16,8,24,8

@@ -1,7 +1,10 @@
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.properties import ListProperty
 from kivy.uix.label import Label
+from kivy.garden.FileBrowser import FileBrowser
+from kivy.uix.popup import Popup
 from os import listdir
+from os.path import isdir, join
 import pickle
 
 FILENAME_PKL = "mangahub.pkl"
@@ -52,16 +55,30 @@ def getSeries(sourcepath):
     '''
     Returns a list of string Series titles found in the source directory passed
     '''
+    #TODO listdir is unsorted, natural sort before return
     return listdir(sourcepath)
 def getAllSeries():
     '''
-    Returns a list containing series from all sources
+    Returns a list containing tuples of the form (source_path,series_name)
     '''
     allseries=[]
     for source in getSources():
-        allseries = allseries + getSeries(source)
+        allseries = allseries + map(lambda x: (source,x),getSeries(source))
     return allseries
-
+def getChapters(seriespath):
+    '''
+    Returns the directories in passed path.
+    These correspond to chapters of the series
+    '''
+    #TODO natural sort before return
+    return listdir(seriespath)
+def getPages(chapterpath):
+    '''
+    Returns all files in the passed path.
+    These correspond to pages of the chapter
+    '''
+    #TODO natural sort before return
+    return listdir(chapterpath)
 class SourcesDialogLabel(Label):
     pass
 
@@ -70,11 +87,14 @@ class SourcesDialogContent(AnchorLayout):
     def getSources(self):
         return getSources()
     def buttonPressed(self,button):
-        #TODO Provide filechooser for path selection
-        new_source = 'F:\\Pokemon Games'
-        #TODO add to sources, then to titles
-        addSource(new_source)
-        self.titles.append(new_source)
+        browser = FileBrowser(select_string='Select Source')
+        browser.bind(
+                    on_success=self._fbrowser_success,
+                    on_canceled=self._fbrowser_canceled)
+        browser.dirselect= True
+        browser.filters = [self.is_dir]
+        pop = Popup(title='FileBro',content=browser)
+        pop.open()
     def on_titles(self,instance,values):
         sources = self.ids['current_sources']
         #remove old labels
@@ -85,3 +105,15 @@ class SourcesDialogContent(AnchorLayout):
             item.text = source
             sources.add_widget(item)
         sources.add_widget(Label())
+    def is_dir(self,directory,filename):
+        return isdir(join(directory,filename))
+    def _fbrowser_canceled(self, instance):
+        #close the FileBrowser Popup
+        instance.parent.parent.parent.dismiss()
+    def _fbrowser_success(self, instance):
+        # add the selection to sources
+        new_source = instance.selection[0]
+        addSource(new_source)
+        self.titles.append(new_source)
+        # now close the FileBrowser Popup
+        instance.parent.parent.parent.dismiss()
