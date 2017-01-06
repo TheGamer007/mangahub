@@ -51,3 +51,8 @@ $ chmod +x install.sh
 Open the application by running the 'main.py' file. This can be done either by double-clicking it, or through Command Prompt / Terminal, based on you Python installation settings.
 
 Detailed help for usage is provided within the application itself.
+
+## Examples
+An 'Examples' folder is included in this repo for testing purposes wihout needing you to download any Manga by yourself.
+
+To import, Add the 'Manga' folder as a source. **NOT** the Examples folder itself.
