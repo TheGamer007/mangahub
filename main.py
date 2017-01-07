@@ -18,7 +18,7 @@ class MangaHubApp(App):
     '''
     def build(self):
         myScreenManager = RootScreenManager()
-        myScreenManager.add_widget(TextHomeScreen())
+        myScreenManager.add_widget(TextHomeScreen(myScreenManager))
         return myScreenManager
 
 if __name__ == '__main__':

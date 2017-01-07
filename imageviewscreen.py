@@ -4,6 +4,8 @@ from kivy.uix.image import Image
 from kivy.uix.popup import Popup
 from kivy.properties import StringProperty
 from kivy.uix.label import Label
+from os.path import join
+from library import getPages
 
 class ImageViewScreen(Screen):
     '''
@@ -12,18 +14,26 @@ class ImageViewScreen(Screen):
     '''
     myScreenManager = None
     pageslist = [] #this is expected to be a natural sorted list of paths to the images
-    current_index = 0
-    def __init__(self,pages,**kwargs):
+    chapterslist = [] # natsorted list of chapters
+    pageindex, chapterindex = 0,0
+    basepath = ""
+
+    def __init__(self,chapters,chapterindex,basepath,**kwargs):
         super(ImageViewScreen,self).__init__(**kwargs)
         self.myScreenManager = self.ids.images_manager
-        self.pageslist = pages
-        self.current_index = 0
-        self.myScreenManager.switch_to(ImageScreen(src = self.pageslist[0]))
+        self.basepath = basepath
+        self.chapterslist = chapters
+        self.chapterindex = chapterindex
+        chapterpath = join(self.basepath,self.chapterslist[self.chapterindex])
+        self.pageslist = map(lambda x: join(chapterpath,x), getPages(chapterpath))
+        self.myScreenManager.switch_to(ImageScreen(src = self.pageslist[self.pageindex]))
         self._keyboard = Window.request_keyboard(self._keyboard_closed,self)
         self._keyboard.bind(on_key_down = self.on_keyboard_down)
+
     def _keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self.on_keyboard_down)
         self._keyboard = None
+
     def on_keyboard_down(self,keyboard,keycode,text,modifiers):
         # keycode is a tuple of the form (int,str)
         # key pressed as str is therefore == keycode[1]
@@ -31,25 +41,58 @@ class ImageViewScreen(Screen):
             self.prevPage()
         elif keycode[1]=='right' or keycode[1]=='d':
             self.nextPage()
+
     def prevPage(self):
-        self.current_index -= 1
-        if self.current_index < 0:
-            self.current_index += 1 #negating the effect of decrement
-            p = Popup(title="Alert",content=Label(text="You have reached the first page!"),size_hint=(0.4,0.4))
-            p.open()
-            return
-        imgscreen = ImageScreen(src = self.pageslist[self.current_index])
-        self.myScreenManager.switch_to(imgscreen,direction='right')
+        if self.pageindex == 0:
+            # first page in chapter, jump to previous
+            self.prevChapter(None)
+        else:
+            self.pageindex -= 1
+            imgscreen = ImageScreen(src = self.pageslist[self.pageindex])
+            self.myScreenManager.switch_to(imgscreen,direction='right')
+
     def nextPage(self):
-        #add check for last item in list
-        self.current_index += 1
-        if self.current_index >= len(self.pageslist):
-            self.current_index -= 1 #negating the effect of increment
-            p = Popup(title="Alert",content=Label(text="You have reached the last page!"),size_hint=(0.4,0.4))
+        if self.pageindex == (len(self.pageslist)-1):
+            # last page in chapter, jump to next
+            self.nextChapter(None)
+        else:
+            self.pageindex += 1
+            imgscreen = ImageScreen(src = self.pageslist[self.pageindex])
+            self.myScreenManager.switch_to(imgscreen,direction='left')
+
+    def prevChapter(self,button):
+        if self.chapterindex == 0:
+            # no chapter before this, give alert
+            p = Popup(title="Alert",content=Label(text="You have reached the first page of the first chapter!"),size_hint=(0.4,0.4))
             p.open()
-            return
-        imgscreen = ImageScreen(src = self.pageslist[self.current_index])
-        self.myScreenManager.switch_to(imgscreen,direction='left')
+        else:
+            # jump to previous chapter
+            self.chapterindex -= 1
+            chapterpath = join(self.basepath,self.chapterslist[self.chapterindex])
+            self.pageslist = map(lambda x: join(chapterpath,x), getPages(chapterpath))
+            # last page of prev if using keys, first page if button
+            if button != None:
+                self.pageindex = 0
+            else:
+                self.pageindex = len(self.pageslist) - 1
+            imgscreen = ImageScreen(src = self.pageslist[self.pageindex])
+            self.myScreenManager.switch_to(imgscreen,direction='right')
+
+    def nextChapter(self,button):
+        if self.chapterindex == (len(self.chapterslist)-1):
+            # no chapter after this, give alert
+            p = Popup(title="Alert",content=Label(text="You have reached the last page of the last chapter!"),size_hint=(0.4,0.4))
+            p.open()
+        else:
+            # jump to next chapter.
+            # Doesn't matter by key or button, go to first page
+            self.chapterindex += 1
+            chapterpath = join(self.basepath,self.chapterslist[self.chapterindex])
+            self.pageslist = map(lambda x: join(chapterpath,x), getPages(chapterpath))
+            self.pageindex = 0
+            imgscreen = ImageScreen(src = self.pageslist[self.pageindex])
+            self.myScreenManager.switch_to(imgscreen,direction='left')
+
 class ImageScreen(Screen):
     '''
     Screen consisting of only one Image widget

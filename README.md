@@ -52,7 +52,5 @@ Open the application by running the 'main.py' file. This can be done either by d
 
 Detailed help for usage is provided within the application itself.
 
-## Examples
-An 'Examples' folder is included in this repo for testing purposes wihout needing you to download any Manga by yourself.
-
-To import, Add the 'Manga' folder as a source. **NOT** the Examples folder itself.
+## Samples
+A folder with samples for testing the application can be found [here](https://drive.google.com/drive/folders/0B7lmcKGeLFy2T1VRU2Y4WTJfb28?usp=sharing). Download the 'MangaHub Samples' folder, set it as the source in order to add it to the application.

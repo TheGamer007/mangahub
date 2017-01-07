@@ -74,7 +74,6 @@
 		on_release: root.buttonClicked(self)
 <TextHomeScreen>:
 	name: 'texthomescreen'
-	titles: root.getAllSeries()
 	BoxLayout:
 		orientation: 'vertical'
 		canvas.before:
@@ -108,6 +107,7 @@
 	height: self.texture_size[1]
 	padding: 8,4
 	halign: 'left'
+	shorten: True
 
 <SourcesDialogContent>:
 	canvas:
@@ -177,6 +177,7 @@
 			size_hint_x: None
 			size_hint_y: 0.4
 			pos_hint: {'center_y':0.5}
+			on_release: root.prevChapter(self)
 		ScreenManager:
 			id: images_manager
 		Button:
@@ -185,6 +186,7 @@
 			size_hint_x: None
 			size_hint_y: 0.4
 			pos_hint: {'center_y':0.5}
+			on_release: root.nextChapter(self)
 ## seriesscreen.py
 <ChapterLabel>:
 	text_size: self.size

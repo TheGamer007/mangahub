@@ -30,9 +30,13 @@ class TextHomeScreen(Screen):
     A HomeScreen with minimal text-based design for testing purposes
     '''
     titles = ListProperty() # list of (source_path,series_name) tuples
+    myRootScreenManager = None
 
-    def getAllSeries(self):
-        return getAllSeries()
+    def __init__(self,screenmanager,**kwargs):
+        super(TextHomeScreen,self).__init__(**kwargs)
+        self.myRootScreenManager = screenmanager
+        self.titles = getAllSeries()
+
     def openSourcesDialog(self,button):
         modal = ModalView(size_hint=(0.7,0.7))
         s = SourcesDialogContent()
@@ -40,9 +44,11 @@ class TextHomeScreen(Screen):
         modal.add_widget(s)
         modal.bind(on_dismiss=self.onPopupClosed)
         modal.open()
+
     def onPopupClosed(self,instance):
         #refresh the series listing
         self.titles = getAllSeries()
+
     def on_titles(self,instance,value):
         catalog = self.ids.layout_catalog
         #remove old labels
@@ -55,6 +61,7 @@ class TextHomeScreen(Screen):
             # since they were obtained through filechooser and os.listdir
             item.path = join(series_tuple[0],series_tuple[1])
             item.text = series_tuple[1]
+            item.myRootScreenManager = self.myRootScreenManager
             catalog.add_widget(item)
 
 class TextItem(BoxLayout):
@@ -63,10 +70,10 @@ class TextItem(BoxLayout):
     of the title
     '''
     text = StringProperty()
-    path = StringProperty() #This is path to the series, not a chapter
+    path = StringProperty() # This is path to the series, not a chapter
+    myRootScreenManager = None
+
     def buttonClicked(self,button):
-        #get the RootScreenManager object in order to shift to new screen
-        myRootScreenManager = self.parent.parent.parent.parent.parent
         mySeriesScreen = SeriesScreen()
         # Passing chapters while initiating: SeriesScreen(chapters=[blah,blah])
         # gives Attribute Error due to self.ids.chapter_list not being found
@@ -74,6 +81,7 @@ class TextItem(BoxLayout):
         # For the same reason, it is very important that the path StringProperty be assigned
         # before chapters ListProperty. Otherwise, basepath will be taken as default '' when on_chapters is run
         mySeriesScreen.basepath = self.path
+        mySeriesScreen.myRootScreenManager = self.myRootScreenManager
         mySeriesScreen.chapters = getChapters(self.path)
         mySeriesScreen.ids.chapter_name.text = self.text
-        myRootScreenManager.switch_to(mySeriesScreen)
+        self.myRootScreenManager.switch_to(mySeriesScreen)
