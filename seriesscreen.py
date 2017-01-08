@@ -15,7 +15,8 @@ class ChapterLabel(Label):
         if self.collide_point(*touch.pos):
             myImageViewScreen = ImageViewScreen(basepath=self.basepath,chapters=self.chapters,chapterindex=self.chapterindex)
             self.myRootScreenManager.switch_to(myImageViewScreen)
-            #maximize window for better readability. TODO remember to minimize on exit
+            # maximize window for better readability.
+            # TODO remember to minimize on exit
             Window.maximize()
 class SeriesScreen(Screen):
     chapters = ListProperty() #list of chapter names; expected to be natural sorted

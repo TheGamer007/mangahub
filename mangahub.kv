@@ -117,7 +117,7 @@
 			pos: self.pos
 			size: self.size
 	padding: 12,12,12,12
-	titles: root.getSources()
+	titles: root.getValidSources()
 	BoxLayout:
 		canvas:
 			Color:
@@ -170,23 +170,44 @@
 <ImageViewScreen>:
 	name: 'imageviewscreen'
 	BoxLayout:
-		orientation: 'horizontal'
-		Button:
-			id: chapter_prev
-			text: '<<<'
-			size_hint_x: None
-			size_hint_y: 0.4
-			pos_hint: {'center_y':0.5}
-			on_release: root.prevChapter(self)
-		ScreenManager:
-			id: images_manager
-		Button:
-			id: chapter_next
-			text: '>>>'
-			size_hint_x: None
-			size_hint_y: 0.4
-			pos_hint: {'center_y':0.5}
-			on_release: root.nextChapter(self)
+		orientation: 'vertical'
+		FloatLayout:
+			size_hint: 1,None
+			height: 50
+			canvas:
+				Color:
+					rgba: 1,0,0,0
+				Rectangle:
+					pos: self.pos
+					size: self.size
+			Spinner:
+				id: spinner_chapter
+				pos_hint: {'x':0,'top':1}
+				size_hint_x: None
+				width: 300
+			Spinner:
+				id: spinner_page
+				pos_hint: {'right':1,'top':1}
+				size_hint_x: None
+				width: 300
+		BoxLayout:
+			orientation: 'horizontal'
+			Button:
+				id: chapter_prev
+				text: '<<<'
+				size_hint_x: None
+				size_hint_y: 0.4
+				pos_hint: {'center_y':0.5}
+				on_release: root.prevChapter(self)
+			ScreenManager:
+				id: images_manager
+			Button:
+				id: chapter_next
+				text: '>>>'
+				size_hint_x: None
+				size_hint_y: 0.4
+				pos_hint: {'center_y':0.5}
+				on_release: root.nextChapter(self)
 ## seriesscreen.py
 <ChapterLabel>:
 	text_size: self.size

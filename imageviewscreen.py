@@ -13,22 +13,52 @@ class ImageViewScreen(Screen):
     an image screenmanager for displaying images
     '''
     myScreenManager = None
-    pageslist = [] #this is expected to be a natural sorted list of paths to the images
+    ChapterSpinner, PageSpinner = None, None
+    pageslist = []
+    pagesFilenames = []
     chapterslist = [] # natsorted list of chapters
     pageindex, chapterindex = 0,0
     basepath = ""
+    flag_FromSpinner = True
 
     def __init__(self,chapters,chapterindex,basepath,**kwargs):
         super(ImageViewScreen,self).__init__(**kwargs)
         self.myScreenManager = self.ids.images_manager
+        self.ChapterSpinner = self.ids.spinner_chapter
+        self.PageSpinner = self.ids.spinner_page
         self.basepath = basepath
         self.chapterslist = chapters
         self.chapterindex = chapterindex
+
         chapterpath = join(self.basepath,self.chapterslist[self.chapterindex])
-        self.pageslist = map(lambda x: join(chapterpath,x), getPages(chapterpath))
+        self.pagesFilenames = getPages(chapterpath)
+        self.pageslist = map(lambda x: join(chapterpath,x), self.pagesFilenames)
+        self.ChapterSpinner.values = self.chapterslist
+        self.PageSpinner.values = self.pagesFilenames
+        self.ChapterSpinner.text = self.chapterslist[self.chapterindex]
+        self.PageSpinner.text = self.pagesFilenames[self.pageindex]
         self.myScreenManager.switch_to(ImageScreen(src = self.pageslist[self.pageindex]))
+        self.ChapterSpinner.bind(text = self.updateChapterSpinner)
+        self.PageSpinner.bind(text = self.updatePageSpinner)
+
         self._keyboard = Window.request_keyboard(self._keyboard_closed,self)
         self._keyboard.bind(on_key_down = self.on_keyboard_down)
+
+    def updateChapterSpinner(self,spinner,text):
+        self.chapterindex = spinner.values.index(text)
+        chapterpath = join(self.basepath,self.chapterslist[self.chapterindex])
+        self.pagesFilenames = getPages(chapterpath)
+        self.pageslist = map(lambda x: join(chapterpath,x), self.pagesFilenames)
+        if self.flag_FromSpinner:
+            self.pageindex = 0
+        else:
+            self.flag_FromSpinner = True
+        self.PageSpinner.text = self.pagesFilenames[self.pageindex]
+
+    def updatePageSpinner(self,spinner,text):
+        self.pageindex = spinner.values.index(text)
+        imgscreen = ImageScreen(src = self.pageslist[self.pageindex])
+        self.myScreenManager.switch_to(imgscreen)
 
     def _keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self.on_keyboard_down)
@@ -48,8 +78,8 @@ class ImageViewScreen(Screen):
             self.prevChapter(None)
         else:
             self.pageindex -= 1
-            imgscreen = ImageScreen(src = self.pageslist[self.pageindex])
-            self.myScreenManager.switch_to(imgscreen,direction='right')
+            self.myScreenManager.transition.direction='right'
+            self.PageSpinner.text = self.pagesFilenames[self.pageindex]
 
     def nextPage(self):
         if self.pageindex == (len(self.pageslist)-1):
@@ -57,8 +87,8 @@ class ImageViewScreen(Screen):
             self.nextChapter(None)
         else:
             self.pageindex += 1
-            imgscreen = ImageScreen(src = self.pageslist[self.pageindex])
-            self.myScreenManager.switch_to(imgscreen,direction='left')
+            self.myScreenManager.transition.direction = 'left'
+            self.PageSpinner.text = self.pagesFilenames[self.pageindex]
 
     def prevChapter(self,button):
         if self.chapterindex == 0:
@@ -67,6 +97,7 @@ class ImageViewScreen(Screen):
             p.open()
         else:
             # jump to previous chapter
+            self.flag_FromSpinner = False
             self.chapterindex -= 1
             chapterpath = join(self.basepath,self.chapterslist[self.chapterindex])
             self.pageslist = map(lambda x: join(chapterpath,x), getPages(chapterpath))
@@ -75,8 +106,8 @@ class ImageViewScreen(Screen):
                 self.pageindex = 0
             else:
                 self.pageindex = len(self.pageslist) - 1
-            imgscreen = ImageScreen(src = self.pageslist[self.pageindex])
-            self.myScreenManager.switch_to(imgscreen,direction='right')
+            self.myScreenManager.transition.direction='right'
+            self.ChapterSpinner.text = self.chapterslist[self.chapterindex]
 
     def nextChapter(self,button):
         if self.chapterindex == (len(self.chapterslist)-1):
@@ -86,12 +117,11 @@ class ImageViewScreen(Screen):
         else:
             # jump to next chapter.
             # Doesn't matter by key or button, go to first page
+            self.flag_FromSpinner = False
+            self.myScreenManager.transition.direction = 'left'
             self.chapterindex += 1
-            chapterpath = join(self.basepath,self.chapterslist[self.chapterindex])
-            self.pageslist = map(lambda x: join(chapterpath,x), getPages(chapterpath))
             self.pageindex = 0
-            imgscreen = ImageScreen(src = self.pageslist[self.pageindex])
-            self.myScreenManager.switch_to(imgscreen,direction='left')
+            self.ChapterSpinner.text = self.chapterslist[self.chapterindex]
 
 class ImageScreen(Screen):
     '''
