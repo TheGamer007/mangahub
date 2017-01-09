@@ -174,17 +174,18 @@
 		FloatLayout:
 			size_hint: 1,None
 			height: 50
-			canvas:
-				Color:
-					rgba: 1,0,0,0
-				Rectangle:
-					pos: self.pos
-					size: self.size
 			Spinner:
 				id: spinner_chapter
 				pos_hint: {'x':0,'top':1}
 				size_hint_x: None
 				width: 300
+			Button:
+				id: btn_bookmark
+				pos_hint: {'center_x':0.5,'top':1}
+				text: "Bookmark Page"
+				size_hint_x: None
+				width: self.texture_size[0] * 1.5
+				on_release: root.addBookmark()
 			Spinner:
 				id: spinner_page
 				pos_hint: {'right':1,'top':1}

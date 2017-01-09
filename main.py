@@ -10,7 +10,8 @@ class RootScreenManager(ScreenManager):
     The topmost ScreenManager widget in the application, that also
     serves as the root widget
     '''
-    pass
+    def returnToHome(self):
+        self.switch_to(TextHomeScreen(self))
 
 class MangaHubApp(App):
     '''

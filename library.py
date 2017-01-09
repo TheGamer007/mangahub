@@ -113,9 +113,9 @@ class SourcesDialogContent(AnchorLayout):
 
     def on_titles(self,instance,values):
         sources = self.ids['current_sources']
-        #remove old labels
+        # remove old labels
         sources.clear_widgets()
-        #add from new sources list
+        # add from new sources list
         for source in values:
             item = SourcesDialogLabel()
             item.text = source
@@ -126,7 +126,7 @@ class SourcesDialogContent(AnchorLayout):
         return isdir(join(directory,filename))
 
     def _fbrowser_canceled(self, instance):
-        #close the FileBrowser Popup
+        # close the FileBrowser Popup
         instance.parent.parent.parent.dismiss()
 
     def _fbrowser_success(self, instance):

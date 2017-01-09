@@ -20,6 +20,7 @@ class ImageViewScreen(Screen):
     pageindex, chapterindex = 0,0
     basepath = ""
     flag_FromSpinner = True
+    myRootScreenManager = None
 
     def __init__(self,chapters,chapterindex,basepath,**kwargs):
         super(ImageViewScreen,self).__init__(**kwargs)
@@ -44,6 +45,10 @@ class ImageViewScreen(Screen):
         self._keyboard = Window.request_keyboard(self._keyboard_closed,self)
         self._keyboard.bind(on_key_down = self.on_keyboard_down)
 
+    def addBookmark(self,button):
+        # add Bookmark Popup here
+        pass
+
     def updateChapterSpinner(self,spinner,text):
         self.chapterindex = spinner.values.index(text)
         chapterpath = join(self.basepath,self.chapterslist[self.chapterindex])
@@ -53,9 +58,17 @@ class ImageViewScreen(Screen):
             self.pageindex = 0
         else:
             self.flag_FromSpinner = True
-        self.PageSpinner.text = self.pagesFilenames[self.pageindex]
+        # If the user is on page[0] and tries a chapter jump, PageSpinner.text will not be triggered
+        # Hence, we pass text as '-1' and substitute in updatePageSpinner
+        if self.PageSpinner.text == self.pagesFilenames[self.pageindex]:
+            self.PageSpinner.text = ""
+        else:
+            self.PageSpinner.text = self.pagesFilenames[self.pageindex]
 
     def updatePageSpinner(self,spinner,text):
+        if text == "":
+            self.PageSpinner.text = self.pagesFilenames[self.pageindex]
+            return # the above change will trigger updatePageSpinner again, so break here
         self.pageindex = spinner.values.index(text)
         imgscreen = ImageScreen(src = self.pageslist[self.pageindex])
         self.myScreenManager.switch_to(imgscreen)
@@ -69,8 +82,13 @@ class ImageViewScreen(Screen):
         # key pressed as str is therefore == keycode[1]
         if keycode[1]=='left' or keycode[1]=='a':
             self.prevPage()
+            return True
         elif keycode[1]=='right' or keycode[1]=='d':
             self.nextPage()
+            return True
+        elif keycode[1] == 'backspace':
+            Window.restore()
+            self.myRootScreenManager.returnToHome()
 
     def prevPage(self):
         if self.pageindex == 0:
