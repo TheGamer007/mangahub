@@ -8,6 +8,7 @@ from kivy.uix.modalview import ModalView
 from kivy.properties import StringProperty,ListProperty
 from library import getAllSeries,SourcesDialogContent,getChapters
 from seriesscreen import SeriesScreen
+from bookmarkscreen import BookmarkScreen
 from os.path import join
 from kivy.uix.screenmanager import Screen
 
@@ -44,6 +45,11 @@ class TextHomeScreen(Screen):
         modal.add_widget(s)
         modal.bind(on_dismiss=self.onPopupClosed)
         modal.open()
+
+    def openBookmarks(self,button):
+        bs = BookmarkScreen()
+        bs.myRootScreenManager = self.myRootScreenManager
+        self.myRootScreenManager.switch_to(bs)
 
     def onPopupClosed(self,instance):
         #refresh the series listing

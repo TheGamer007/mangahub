@@ -3,8 +3,10 @@ from homescreen import TextHomeScreen
 from imageviewscreen import ImageViewScreen
 from seriesscreen import SeriesScreen
 from kivy.uix.screenmanager import ScreenManager
+from bookmarkscreen import BookmarkScreen
 from kivy.core.window import Window
 from os import listdir
+
 class RootScreenManager(ScreenManager):
     '''
     The topmost ScreenManager widget in the application, that also

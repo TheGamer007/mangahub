@@ -93,12 +93,18 @@
 				height: self.minimum_height
 				spacing: 1
 				padding: 16,8	,24,8
-		Button:
-			id: btn_add
-			on_release: root.openSourcesDialog(self)
-			text: "Manage Sources"
+		BoxLayout:
+			orientation: 'horizontal'
 			size_hint_y: None
 			height: 50
+			Button:
+				id: btn_add
+				on_release: root.openSourcesDialog(self)
+				text: "Manage Sources"
+			Button:
+				id: btn_bkmrk
+				on_release: root.openBookmarks(self)
+				text: "View Bookmarks"
 
 ## library.py
 <SourcesDialogLabel>:
@@ -185,7 +191,7 @@
 				text: "Bookmark Page"
 				size_hint_x: None
 				width: self.texture_size[0] * 1.5
-				on_release: root.addBookmark()
+				on_release: root.addBookmarkPop(self)
 			Spinner:
 				id: spinner_page
 				pos_hint: {'right':1,'top':1}
@@ -221,10 +227,17 @@
 	BoxLayout:
 		orientation: 'vertical'
 		Label:
+			canvas:
+				Color:
+					rgba: 1,1,1,0.05
+				Rectangle:
+					pos: self.pos
+					size: self.size
 			id: chapter_name
 			text: '[b]Series Name Here[/b]'
 			markup: True
 			size_hint_y: None
+			height: self.texture_size[1] * 4
 		ScrollView:
 			do_scroll_x: False
 			do_scroll_y: True
@@ -235,3 +248,43 @@
 				height: self.minimum_height
 				spacing: 1
 				padding: 16,8,24,8
+## bookmarkscreen.py
+<BookmarkScreen>:
+	name: 'bookmarkscreen'
+	GridLayout:
+		canvas:
+			Color:
+				rgba: 1,1,1,1
+			Rectangle:
+				pos: self.pos
+				size: self.size
+		id: layout_grid
+		cols: 4
+<BookmarkPopup>:
+	title_size: 20
+	cols: 1
+	padding: 16,16,16,16
+	TextInput:
+		id: inp_desc
+		size_hint_y: None
+		height: self.minimum_height
+		focus: False
+		multiline: False
+		hint_text: 'Enter Description Here...'
+	FloatLayout:
+		size_hint_y: None
+		height: btn_save.height * 1.5
+		Button:
+			id: btn_save
+			text: "Save"
+			size_hint: None, None
+			padding: 24,8
+			size: self.texture_size
+			pos_hint: {'x':0,'y':0}
+		Button:
+			id: btn_close
+			text: "Close"
+			size_hint: None, None
+			padding: 24,8
+			size: self.texture_size
+			pos_hint: {'right':1,'y':0}

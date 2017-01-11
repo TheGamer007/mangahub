@@ -6,6 +6,7 @@ from kivy.properties import StringProperty
 from kivy.uix.label import Label
 from os.path import join
 from library import getPages
+from bookmarkscreen import BookmarkPopup,addBookmark
 
 class ImageViewScreen(Screen):
     '''
@@ -18,11 +19,11 @@ class ImageViewScreen(Screen):
     pagesFilenames = []
     chapterslist = [] # natsorted list of chapters
     pageindex, chapterindex = 0,0
-    basepath = ""
+    basepath = "" # path to series
     flag_FromSpinner = True
     myRootScreenManager = None
 
-    def __init__(self,chapters,chapterindex,basepath,**kwargs):
+    def __init__(self,chapters,chapterindex,basepath,pageindex=0,**kwargs):
         super(ImageViewScreen,self).__init__(**kwargs)
         self.myScreenManager = self.ids.images_manager
         self.ChapterSpinner = self.ids.spinner_chapter
@@ -30,6 +31,7 @@ class ImageViewScreen(Screen):
         self.basepath = basepath
         self.chapterslist = chapters
         self.chapterindex = chapterindex
+        self.pageindex = pageindex
 
         chapterpath = join(self.basepath,self.chapterslist[self.chapterindex])
         self.pagesFilenames = getPages(chapterpath)
@@ -45,10 +47,17 @@ class ImageViewScreen(Screen):
         self._keyboard = Window.request_keyboard(self._keyboard_closed,self)
         self._keyboard.bind(on_key_down = self.on_keyboard_down)
 
+    def addBookmarkPop(self,button):
+        # TODO increase title text size
+        bookmarkPopContent = BookmarkPopup()
+        bookmarkPop = Popup(title="Bookmark",content=bookmarkPopContent,size_hint=(0.5,0.2))
+        bookmarkPopContent.ids.btn_close.bind(on_release=bookmarkPop.dismiss)
+        bookmarkPopContent.ids.btn_save.bind(on_release= self.addBookmark)
+        bookmarkPop.open()
     def addBookmark(self,button):
-        # add Bookmark Popup here
-        pass
-
+        addBookmark(desc=button.parent.parent.ids.inp_desc.text,basepath=self.basepath,chapterindex=self.chapterindex,pageindex=self.pageindex)
+        button.parent.parent.parent.dismiss()
+        
     def updateChapterSpinner(self,spinner,text):
         self.chapterindex = spinner.values.index(text)
         chapterpath = join(self.basepath,self.chapterslist[self.chapterindex])
