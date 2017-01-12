@@ -1,11 +1,8 @@
 from kivy.app import App
 from homescreen import TextHomeScreen
 from imageviewscreen import ImageViewScreen
-from seriesscreen import SeriesScreen
 from kivy.uix.screenmanager import ScreenManager
-from bookmarkscreen import BookmarkScreen
 from kivy.core.window import Window
-from os import listdir
 
 class RootScreenManager(ScreenManager):
     '''
@@ -14,6 +11,12 @@ class RootScreenManager(ScreenManager):
     '''
     def returnToHome(self):
         self.switch_to(TextHomeScreen(self))
+
+    def openImageScreen(self,basepath,chapters,chapterindex,pageindex):
+        myImageViewScreen = ImageViewScreen(basepath=basepath,chapters=chapters,chapterindex=chapterindex,pageindex=pageindex)
+        myImageViewScreen.myRootScreenManager = self
+        self.switch_to(myImageViewScreen)
+        Window.maximize()
 
 class MangaHubApp(App):
     '''

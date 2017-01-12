@@ -1,8 +1,9 @@
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.screenmanager import Screen,ScreenManager
 from kivy.core.window import Window
-from os.path import isdir, join
+from library import getChapters
 import pickle
 from kivy.properties import ListProperty
 
@@ -33,12 +34,26 @@ def addBookmark(desc,basepath,chapterindex,pageindex):
     pickle.dump(current_dict,pkl_write)
     pkl_write.close()
 
+class LblRow(BoxLayout):
+    textvalues = ListProperty(['','','',''])
+    bookmark_data = ListProperty()
+    myRootScreenManager = None
+
+    def on_touch_down(self,touch):
+        if self.collide_point(*touch.pos):
+            self.myRootScreenManager.openImageScreen(*self.extractBookmarkData(self.bookmark_data))
+    def extractBookmarkData(self,bkmrk):
+        # bkmrk = (desc, basepath,chapterindex,pageindex)
+        chapters = getChapters(bkmrk[1])
+        return (bkmrk[1],chapters,bkmrk[2],bkmrk[3])
+
 class BookmarkScreen(Screen):
     bookmarks = ListProperty()
     myRootScreenManager = None
 
-    def __init__(self,**kwargs):
+    def __init__(self,rootscreenmanager,**kwargs):
         super(BookmarkScreen,self).__init__(**kwargs)
+        self.myRootScreenManager = rootscreenmanager
         self.bookmarks = getBookmarks()
         self._keyboard = Window.request_keyboard(self._keyboard_closed,self)
         self._keyboard.bind(on_key_down = self.on_keyboard_down)
@@ -57,11 +72,11 @@ class BookmarkScreen(Screen):
         layout.clear_widgets()
         serial = 1
         for bkmrk in value:
-            print bkmrk
-            layout.add_widget(Label(text='#'+str(serial),size_hint=(None,None),color=[0,0,0,1]))
-            layout.add_widget(Label(text=bkmrk[0],size_hint=(1,None),color=[0,0,0,1]))
-            layout.add_widget(Label(text='Chapter '+str(bkmrk[2]+1),size_hint=(None,None),color=[0,0,0,1]))
-            layout.add_widget(Label(text='Page '+str(bkmrk[3]+1),size_hint=(None,None),color=[0,0,0,1]))
+            row = LblRow()
+            row.textvalues = ['#'+str(serial),bkmrk[0],'Chapter '+str(bkmrk[2]+1),'Page '+str(bkmrk[3]+1)]
+            row.bookmark_data = bkmrk
+            row.myRootScreenManager = self.myRootScreenManager
+            layout.add_widget(row)
             serial += 1
 
 class BookmarkPopup(GridLayout):

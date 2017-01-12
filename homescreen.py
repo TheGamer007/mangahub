@@ -47,9 +47,7 @@ class TextHomeScreen(Screen):
         modal.open()
 
     def openBookmarks(self,button):
-        bs = BookmarkScreen()
-        bs.myRootScreenManager = self.myRootScreenManager
-        self.myRootScreenManager.switch_to(bs)
+        self.myRootScreenManager.switch_to(BookmarkScreen(self.myRootScreenManager))
 
     def onPopupClosed(self,instance):
         #refresh the series listing

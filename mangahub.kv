@@ -249,9 +249,55 @@
 				spacing: 1
 				padding: 16,8,24,8
 ## bookmarkscreen.py
+<LblRow>:
+	orientation: 'horizontal'
+	size_hint_y: None
+	height: lbl_desc.height
+	canvas.before:
+		Color:
+			rgba: 0,0,0,1
+		Line:
+			points: self.x, self.y, self.x+self.width,self.y
+	padding: 4,4,4,4
+	Label:
+		id: lbl_sno
+		color: 0,0,0,1
+		text: root.textvalues[0]
+		text_size: self.size
+		height: self.texture_size[1]
+		width: 50
+		size_hint: None,None
+		halign: 'center'
+	Label:
+		id: lbl_desc
+		color: 0,0,0,1
+		text: root.textvalues[1]
+		text_size: self.size
+		height: self.texture_size[1]
+		size_hint: 1,None
+		halign: 'left'
+	Label:
+		id: lbl_chp
+		color: 0,0,0,1
+		size_hint: None,None
+		text_size: self.size
+		height: self.texture_size[1]
+		text: root.textvalues[2]
+		halign: 'center'
+	Label:
+		id: lbl_pg
+		color: 0,0,0,1
+		size_hint: None,None
+		text_size: self.size
+		height: self.texture_size[1]
+		text: root.textvalues[3]
+		halign: 'center'
+
 <BookmarkScreen>:
 	name: 'bookmarkscreen'
 	GridLayout:
+		padding: 4,16,4,4
+		spacing: 12
 		canvas:
 			Color:
 				rgba: 1,1,1,1
@@ -259,7 +305,7 @@
 				pos: self.pos
 				size: self.size
 		id: layout_grid
-		cols: 4
+		cols: 1
 <BookmarkPopup>:
 	title_size: 20
 	cols: 1
@@ -270,7 +316,7 @@
 		height: self.minimum_height
 		focus: False
 		multiline: False
-		hint_text: 'Enter Description Here...'
+		hint_text: 'Enter Description Here... (50 characters limit)'
 	FloatLayout:
 		size_hint_y: None
 		height: btn_save.height * 1.5

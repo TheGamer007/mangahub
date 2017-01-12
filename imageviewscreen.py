@@ -55,9 +55,12 @@ class ImageViewScreen(Screen):
         bookmarkPopContent.ids.btn_save.bind(on_release= self.addBookmark)
         bookmarkPop.open()
     def addBookmark(self,button):
-        addBookmark(desc=button.parent.parent.ids.inp_desc.text,basepath=self.basepath,chapterindex=self.chapterindex,pageindex=self.pageindex)
-        button.parent.parent.parent.dismiss()
-        
+        # takes only upto 50 characters of desc
+        addBookmark(desc=button.parent.parent.ids.inp_desc.text[:50],basepath=self.basepath,chapterindex=self.chapterindex,pageindex=self.pageindex)
+        button.parent.parent.parent.parent.parent.dismiss()
+        self._keyboard = Window.request_keyboard(self._keyboard_closed,self)
+        self._keyboard.bind(on_key_down = self.on_keyboard_down)
+
     def updateChapterSpinner(self,spinner,text):
         self.chapterindex = spinner.values.index(text)
         chapterpath = join(self.basepath,self.chapterslist[self.chapterindex])
