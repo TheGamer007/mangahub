@@ -6,8 +6,8 @@ from kivy.core.window import Window
 
 class RootScreenManager(ScreenManager):
     '''
-    The topmost ScreenManager widget in the application, that also
-    serves as the root widget
+    The topmost ScreenManager widget in the application that also
+    serves as the root widget.
     '''
     def returnToHome(self):
         self.switch_to(TextHomeScreen(self))
@@ -20,7 +20,7 @@ class RootScreenManager(ScreenManager):
 
 class MangaHubApp(App):
     '''
-    Kivy App class
+    Kivy App class.
     '''
     def build(self):
         myScreenManager = RootScreenManager()

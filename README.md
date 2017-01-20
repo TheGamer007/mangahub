@@ -47,10 +47,43 @@ If this does not work, ensure that the file is executable by running:
 $ chmod +x install.sh
 ```
 
-## Usage
-Open the application by running the 'main.py' file. This can be done either by double-clicking it, or through Command Prompt / Terminal, based on you Python installation settings.
+## Usage and Help
+#### Opening/Running the application
+Open the application by running the 'main.py' file. This can be done either by double-clicking it, or through Command Prompt / Terminal, based on your Python installation settings.
 
-Detailed help for usage is provided within the application itself.
+#### File Tree Structure
+The application asks the user to add directories as 'sources' and then scans these automatically in order to populate a list of series. The structure currently supported is as follows:
+```
+>source_dir/
+  >series_dir_1
+  >series_dir_2
+    >chapter_dir_1
+    >chapter_dir_2
+      img_1
+      img_2
+```
+The source directory contains each series as a separate directory. Each of the series directories will have chapters in separate directories. The chapter directories contain the image files corresponding to pages of the Manga.
+
+Since all the user does is add the source directory, names of series and chapters are taken from the respective directory names. As far as ordering is concerned, the list of directories are natural sorted, so they can be named anything as long as they appear in proper order within your file browser.
+
+#### Adding sources
+The first time the application is opened, a black screen will be displayed with two buttons at the bottom. Pressing the 'Manage Sources' button opens a dialog that allows adding of new sources. Once a source is added, the series within it will be automatically scanned and displayed on the HomeScreen.
+>Note:<br>If the path to a source directory changes, i.e. the previous path does not exist anymore, then the application will ignore the source. This prevents erroneous listings and unexpected crashes.
+
+#### Opening a Chapter
+Clicking on a title listed on the HomeScreen opens the SeriesScreen where each chapter is listed. If there are a lot of chapters, it may take a few seconds for the screen to load, so please refrain from clicking multiple times. Clicking on a chapter opens an ImageViewScreen positioned at the first page of the sekected chapter.
+
+#### Navigating while reading
+Buttons, Spinners and keys can be used to smoothly navigate while reading. Pressing either 'left' / 'a' or 'right' / 'd' turns the page in the corresponding direction. The large buttons to the side are used to skip to the previous and next chapters.
+>Note:<br>
+While this is a Manga, the image files will likely be ordered in left-to-right fashion and not in the traditional right-to-left. Hence, pressing 'right' moves to the next page and 'left' to the previous one.<br>
+An optional setting might be added in future updates to allow for right-to-left navigation as well.
+
+#### Bookmarking
+An 'Add Bookmark' button is provided on top of the page in the ImageViewScreen to allow for easy bookmarking of important pages. A short description can be added to distinguish the bookmark and specify context.<br>
+In order to view all bookmarked pages, press the 'View Bookmarks' button on the bottom of the HomeScreen. Pressing any of the listed items will automatically open the corresponding page.
+
+** At any point in the application (except when Dialogs are open), pressing the 'Backspace' key will return the user to the HomeScreen. **
 
 ## Samples
-A folder with samples for testing the application can be found [here](https://drive.google.com/drive/folders/0B7lmcKGeLFy2T1VRU2Y4WTJfb28?usp=sharing). Download the 'MangaHub Samples' folder, set it as the source in order to add it to the application.
+A folder with samples for testing the application can be found [here](https://drive.google.com/drive/folders/0B7lmcKGeLFy2T1VRU2Y4WTJfb28?usp=sharing). Download the 'MangaHub Samples' folder and add it as the source. You should now be able to see a series named 'Detective Conan' listed on the HomeScreen.

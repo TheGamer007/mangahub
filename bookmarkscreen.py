@@ -1,7 +1,7 @@
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from kivy.uix.screenmanager import Screen,ScreenManager
+from kivy.uix.screenmanager import Screen
 from kivy.core.window import Window
 from library import getChapters
 import pickle
@@ -10,7 +10,11 @@ from kivy.properties import ListProperty
 FILENAME_PKL = 'mangahub.pkl'
 
 def getBookmarks():
-    # read from pkl['bookmarks'] = [(),(desc,basepath,chapterindex,pageindex),()]
+    '''
+    Reads pkl for list of bookmarks and returns an array with items
+    of the form (desc,basepath,chapterindex,pageindex). Returns empty array
+    if no bookmarks found.
+    '''
     pkl_read = open(FILENAME_PKL,'rb')
     current_dict = pickle.load(pkl_read)
     pkl_read.close()
@@ -20,7 +24,10 @@ def getBookmarks():
         return []
 
 def addBookmark(desc,basepath,chapterindex,pageindex):
-    # add to pkl['bookmarks'] = (desc, basepath, chapterindex, pageindex)
+    '''
+    Adds the tuple (desc, basepath, chapterindex, pageindex) to the array
+    present in pkl['bookmarks'].
+    '''
     # pkl must exist since sources added
     pkl_read = open(FILENAME_PKL,'rb')
     current_dict = pickle.load(pkl_read)
@@ -35,6 +42,9 @@ def addBookmark(desc,basepath,chapterindex,pageindex):
     pkl_write.close()
 
 class LblRow(BoxLayout):
+    '''
+    Custom widget defining a single row of data displayed on the BookmarkScreen.
+    '''
     textvalues = ListProperty(['','','',''])
     bookmark_data = ListProperty()
     myRootScreenManager = None
@@ -48,6 +58,10 @@ class LblRow(BoxLayout):
         return (bkmrk[1],chapters,bkmrk[2],bkmrk[3])
 
 class BookmarkScreen(Screen):
+    '''
+    Screen widget that holds other widgets and is added to ScreenManager.
+    Contains a GridLayout that displays all Bookmarks.
+    '''
     bookmarks = ListProperty()
     myRootScreenManager = None
 
@@ -79,5 +93,8 @@ class BookmarkScreen(Screen):
             layout.add_widget(row)
             serial += 1
 
-class BookmarkPopup(GridLayout):
+class BookmarkPopupContent(GridLayout):
+    '''
+    Layout widget which is the root widget for the 'Add Bookmark' Popup.
+    '''
     pass

@@ -11,13 +11,16 @@ import re
 FILENAME_PKL = "mangahub.pkl"
 
 def natsort(l):
+    '''
+    Returns a natural-sorted copy of the list passed.
+    '''
     convert = lambda text: int(text) if text.isdigit() else text.lower()
     alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)',key)]
     return sorted(l,key=alphanum_key)
 
 def addSource(sourcepath):
     '''
-    Adds this directory as one of the sources for the library
+    Adds this directory as one of the sources for the application.
     '''
     current_dict={'sources':[]}
     try:
@@ -34,7 +37,7 @@ def addSource(sourcepath):
 
 def removeSource(sourcepath):
     '''
-    Removes the passed source, if in sources
+    Removes the passed source, if in sources.
     '''
     current_dict = {'sources':[]}
     try:
@@ -49,7 +52,8 @@ def removeSource(sourcepath):
     pkl_write.close()
 def getValidSources():
     '''
-    Returns all sources as a list. Invalid sources are not returned
+    Returns all sources as a list. Currently, invalid sources are ignored.
+    They are not automatically removed.
     '''
     try:
         pkl_read = open(FILENAME_PKL,'rb')
@@ -63,13 +67,13 @@ def getValidSources():
 
 def getSeries(sourcepath):
     '''
-    Returns a list of string Series titles found in the source directory passed
+    Returns a list of series titles (String) found in the source directory passed.
     '''
     return natsort(listdir(sourcepath))
 
 def getAllSeries():
     '''
-    Returns a list containing tuples of the form (source_path,series_name)
+    Returns a list containing tuples of the form (source_path,series_name).
     '''
     allseries=[]
     for source in getValidSources():
@@ -79,7 +83,7 @@ def getAllSeries():
 def getChapters(seriespath):
     '''
     Returns the directories in passed path.
-    These correspond to chapters of the series
+    These correspond to chapters of the series.
     '''
     # Possible UI freezing for few seconds when number of chapters is very large (~900).
     # TODO Develop loading screen
@@ -88,20 +92,31 @@ def getChapters(seriespath):
 def getPages(chapterpath):
     '''
     Returns all files in the passed path.
-    These correspond to pages of the chapter
+    These correspond to pages of the chapter.
     '''
     return natsort(listdir(chapterpath))
 
 class SourcesDialogLabel(Label):
+    '''
+    Custom Label implementation that displays each source's path.
+    '''
     pass
 
 class SourcesDialogContent(AnchorLayout):
+    '''
+    Root widget for the Sources Dialog. Displays current sources,
+    a button to add a new source and a close button.
+    '''
     titles = ListProperty()
 
     def getValidSources(self):
         return getValidSources()
 
     def buttonPressed(self,button):
+        '''
+        Opens a FileBrowser to let the user select a new source dir.
+        Adds selected source to pkl.
+        '''
         browser = FileBrowser(select_string='Select Source')
         browser.bind(
                     on_success=self._fbrowser_success,
@@ -123,6 +138,9 @@ class SourcesDialogContent(AnchorLayout):
         sources.add_widget(Label())
 
     def is_dir(self,directory,filename):
+        '''
+        Method passed as a filter to FileBrowser in order to display only directories.
+        '''
         return isdir(join(directory,filename))
 
     def _fbrowser_canceled(self, instance):

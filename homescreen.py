@@ -1,7 +1,4 @@
 from kivy.uix.label import Label
-from kivy.uix.widget import Widget
-from kivy.uix.button import Button
-from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.modalview import ModalView
@@ -12,23 +9,25 @@ from bookmarkscreen import BookmarkScreen
 from os.path import join
 from kivy.uix.screenmanager import Screen
 
+
 class BookCover(Label):
     '''
-    An extension of Label that is suited for displaying book cover thumbnails.
-    Primary element of the main HomeScreen
+    Custom implementation of Label that is suited for displaying book cover thumbnails.
+    Primary element of the main HomeScreen. Currently unused.
     '''
     pass
 
 class HomeScreen(GridLayout):
     '''
     The main class which will be used to display the HomeScreen in the
-    final application
+    final application. Currently unused.
     '''
     pass
 
 class TextHomeScreen(Screen):
     '''
-    A HomeScreen with minimal text-based design for testing purposes
+    Screen widget that holds other widgets and is added to ScreenManager
+    Displays all the series from added sources in a minimal, text-based design.
     '''
     titles = ListProperty() # list of (source_path,series_name) tuples
     myRootScreenManager = None
@@ -39,6 +38,10 @@ class TextHomeScreen(Screen):
         self.titles = getAllSeries()
 
     def openSourcesDialog(self,button):
+        '''
+        Opens dialog that displays currently added sources and allows
+        addition of new ones.
+        '''
         modal = ModalView(size_hint=(0.7,0.7))
         s = SourcesDialogContent()
         s.ids['btn_cls'].bind(on_release=modal.dismiss)
@@ -71,7 +74,7 @@ class TextHomeScreen(Screen):
 class TextItem(BoxLayout):
     '''
     The primary element in the TextHomeScreen. A single row consisting
-    of the title
+    of the title of the series.
     '''
     text = StringProperty()
     path = StringProperty() # This is path to the series, not a chapter
@@ -79,11 +82,13 @@ class TextItem(BoxLayout):
 
     def buttonClicked(self,button):
         mySeriesScreen = SeriesScreen()
-        # Passing chapters while initiating: SeriesScreen(chapters=[blah,blah])
-        # gives Attribute Error due to self.ids.chapter_list not being found
-        # Likey cause is __init__ not being called before on_chapters. Hence, assign chapters seperately as below.
-        # For the same reason, it is very important that the path StringProperty be assigned
-        # before chapters ListProperty. Otherwise, basepath will be taken as default '' when on_chapters is run
+        '''
+        Passing chapters while initiating: SeriesScreen(chapters=[blah,blah])
+        gives Attribute Error due to self.ids.chapter_list not being found
+        Likey cause is __init__ not being called before on_chapters. Hence, assign chapters seperately as below.
+        For the same reason, it is very important that the path StringProperty be assigned
+        before chapters ListProperty. Otherwise, basepath will be taken as default '' when on_chapters is run.
+        '''
         mySeriesScreen.basepath = self.path
         mySeriesScreen.myRootScreenManager = self.myRootScreenManager
         mySeriesScreen.chapters = getChapters(self.path)

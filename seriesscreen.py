@@ -1,12 +1,13 @@
 from kivy.uix.screenmanager import Screen
 from kivy.uix.label import Label
 from kivy.properties import ListProperty,StringProperty
-from library import getPages
-from os.path import join
 from imageviewscreen import ImageViewScreen
 from kivy.core.window import Window
 
 class ChapterLabel(Label):
+    '''
+    Custom Label implementation that displays each chapter name.
+    '''
     chapterindex = 0
     basepath = ""
     chapters = []
@@ -19,6 +20,10 @@ class ChapterLabel(Label):
             # maximize window for better readability.
             Window.maximize()
 class SeriesScreen(Screen):
+    '''
+    Screen widget that holds other widgets and is added to ScreenManager.
+    Contains a Label with the series name, and a ScrollView that displays the chapters.
+    '''
     chapters = ListProperty() #list of chapter names; expected to be natural sorted
     basepath = StringProperty() #path to the series folder
     myRootScreenManager = None
@@ -38,6 +43,9 @@ class SeriesScreen(Screen):
             return True
 
     def on_chapters(self,instance,value):
+        '''
+        Kivy event callback calls this method everytime the 'chapters' list variable is modified.
+        '''
         chapterslist = self.ids.chapters_list
         #remove old labels
         chapterslist.clear_widgets()
