@@ -83,7 +83,7 @@ An optional setting might be added in future updates to allow for right-to-left 
 An 'Add Bookmark' button is provided on top of the page in the ImageViewScreen to allow for easy bookmarking of important pages. A short description can be added to distinguish the bookmark and specify context.<br>
 In order to view all bookmarked pages, press the 'View Bookmarks' button on the bottom of the HomeScreen. Pressing any of the listed items will automatically open the corresponding page.
 
-** At any point in the application (except when Dialogs are open), pressing the 'Backspace' key will return the user to the HomeScreen. **
+**At any point in the application (except when Dialogs are open), pressing the 'Backspace' key will return the user to the HomeScreen.**
 
 ## Samples
 A folder with samples for testing the application can be found [here](https://drive.google.com/drive/folders/0B7lmcKGeLFy2T1VRU2Y4WTJfb28?usp=sharing). Download the 'MangaHub Samples' folder and add it as the source. You should now be able to see a series named 'Detective Conan' listed on the HomeScreen.
